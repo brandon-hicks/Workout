@@ -8,5 +8,6 @@ namespace Workout1.Services
     {
         Exercise AddExercise(Exercise item);
         IEnumerable<Exercise> GetExerciseItems();
+        void DeleteExercise(string name);
     }
 }

@@ -41,5 +41,13 @@ namespace Workout1.Controllers
 
             return !exerciseItems.Any() ? NoContent() : new ActionResult<IEnumerable<Exercise>>(exerciseItems);
         }
+
+        [HttpDelete]
+        [Route("deleteExercise/{name}")]
+        public ActionResult DeleteExercise([FromRoute]string name)
+        {
+            _services.DeleteExercise(name);
+            return NoContent();
+        }
     }
 }

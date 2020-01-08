@@ -26,5 +26,21 @@ namespace WorkoutServices.Services
         {
             return _exercisesDb;
         }
+
+        public void DeleteExercise(string name)
+        {
+            
+            // Using name.Equals allows us to compare strings regardless of casing
+            _exercisesDb.RemoveAll(ex => ex.name.Equals(name, StringComparison.OrdinalIgnoreCase));
+            
+            // This does the same thing as above, without linq syntax
+            // foreach (var ex in _exercisesDb)
+            // {
+            //     if (ex.name.Equals(name, StringComparison.OrdinalIgnoreCase))
+            //     {
+            //         _exercisesDb.Remove(ex);
+            //     }
+            // }
+        }
     }
 }
