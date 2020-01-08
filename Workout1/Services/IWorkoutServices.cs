@@ -6,7 +6,7 @@ namespace Workout1.Services
 {
     public interface IWorkoutServices
     {
-        WorkoutItems AddWorkoutItems(WorkoutItems items);
-        ActionResult<Dictionary<string, WorkoutItems>> GetWorkoutItems();
+        Exercise AddExercise(Exercise item);
+        IEnumerable<Exercise> GetExerciseItems();
     }
 }

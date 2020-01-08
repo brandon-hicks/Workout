@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using Workout1.Models;
 using Workout1.Services;
@@ -7,22 +9,22 @@ namespace WorkoutServices.Services
 {
     public class WorkoutServices : IWorkoutServices
     {
-        private readonly Dictionary<string, WorkoutItems> _workoutItems;
+        private List<Exercise> _exercisesDb;
 
         public WorkoutServices()
         {
-            _workoutItems = new Dictionary<string, WorkoutItems>();
+            _exercisesDb = new List<Exercise>();
         }
-        public WorkoutItems AddWorkoutItems(WorkoutItems items)
+        public Exercise AddExercise(Exercise item)
         {
-            _workoutItems.Add(items.name, items);
+            _exercisesDb.Add(item);
 
-            return items;
+            return item;
         }
 
-        public ActionResult<Dictionary<string, WorkoutItems>> GetWorkoutItems()
+        public IEnumerable<Exercise> GetExerciseItems()
         {
-            return _workoutItems;
+            return _exercisesDb;
         }
     }
 }

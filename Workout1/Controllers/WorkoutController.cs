@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
@@ -8,7 +9,7 @@ using Workout1.Services;
 
 namespace Workout1.Controllers
 {
-    [Route("v1/")]
+    [Route("api/")]
     [ApiController]
     public class WorkoutController : Controller
     {
@@ -20,30 +21,25 @@ namespace Workout1.Controllers
         }
         
         [HttpPost]
-        [Route("AddWorkoutItems")]
-        public ActionResult<WorkoutItems> AddWorkoutItems(WorkoutItems items)
+        [Route("addExerciseItem")]
+        public ActionResult<Exercise> Exercise(Exercise item)
         {
-            var workoutItems = _services.AddWorkoutItems(items);
+            var exerciseItem = _services.AddExercise(item);
 
-            if (workoutItems == null)
+            if (exerciseItem == null)
             {
                 return NotFound();
             }
-            return workoutItems;
+            return exerciseItem;
         }
 
         [HttpGet]
-        [Route("GetWorkoutItems")]
-        public ActionResult<Dictionary<string, WorkoutItems>> GetWorkoutItems()
+        [Route("getExerciseItems")]
+        public ActionResult<IEnumerable<Exercise>> GetExerciseItems()
         {
-            var workoutItems = _services.GetWorkoutItems();
+            var exerciseItems = _services.GetExerciseItems().ToList();
 
-            if (workoutItems == null)
-            {
-                return NotFound();
-            }
-
-            return workoutItems;
+            return !exerciseItems.Any() ? NoContent() : new ActionResult<IEnumerable<Exercise>>(exerciseItems);
         }
     }
 }
