@@ -10,6 +10,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using MongoDB.Driver;
+using Workout1.Models;
+using Workout1.Repositories;
 using Workout1.Services;
 
 namespace Workout1
@@ -24,34 +27,35 @@ namespace Workout1
         public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
-        public void ConfigureServices(IServiceCollection services)
+        public async void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc(option => option.EnableEndpointRouting = false)
-                .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+                .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
+            var mongoClient =
+                new MongoClient(
+                    "mongodb+srv://WorkoutUser:Matthew2019@testcluster-k7nkp.mongodb.net/test?retryWrites=true&w=majority");
+            var db = mongoClient.GetDatabase("Workouts");
+            
+            services.AddSingleton(db);
+            services.AddSingleton<IExerciseRepository, ExerciseRepository>();
             services.AddSingleton<IWorkoutServices, WorkoutServices.Services.WorkoutServices>();
-            //services.AddControllers();
+            
+            var options = new CreateIndexOptions() { Unique = true };
+            IndexKeysDefinition<Exercise> keyField = "{ exerciseId: 1 }";
+            await db.GetCollection<Exercise>("users").Indexes.CreateOneAsync(keyField, options);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-            }
-            else
-            {
-                app.UseHsts();
-            }
-            
             app.UseMvc();
             
             app.UseRouting();
 
-            app.UseAuthorization();
+            //app.UseAuthorization();
 
-            app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
+            //app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
         }
     }
 }

@@ -1,37 +1,45 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Workout1.Models;
+using Workout1.Repositories;
 using Workout1.Services;
 
 namespace WorkoutServices.Services
 {
     public class WorkoutServices : IWorkoutServices
     {
-        private List<Exercise> _exercisesDb;
+        private readonly IExerciseRepository _repository;
 
-        public WorkoutServices()
+        public WorkoutServices(IExerciseRepository repository)
         {
-            _exercisesDb = new List<Exercise>();
+            _repository = repository;
         }
+        
         public Exercise AddExercise(Exercise item)
         {
-            _exercisesDb.Add(item);
+            _repository.AddExercise(item);
 
             return item;
         }
 
-        public IEnumerable<Exercise> GetExerciseItems()
+        public async Task<IEnumerable<Exercise>> GetExerciseItems()
         {
-            return _exercisesDb;
+           return await _repository.GetExercises();
         }
 
-        public void DeleteExercise(string name)
+        public async Task<Exercise> GetExerciseItem(string id)
+        {
+            return await _repository.GetExercise(id);
+        }
+
+        public async void DeleteExercise(string _id)
         {
             
             // Using name.Equals allows us to compare strings regardless of casing
-            _exercisesDb.RemoveAll(ex => ex.name.Equals(name, StringComparison.OrdinalIgnoreCase));
+            await _repository.DeleteExercise(_id);
             
             // This does the same thing as above, without linq syntax
             // foreach (var ex in _exercisesDb)
@@ -41,6 +49,12 @@ namespace WorkoutServices.Services
             //         _exercisesDb.Remove(ex);
             //     }
             // }
+        }
+
+        public async Task<bool> DeleteAllExercises()
+        {
+            var result = await _repository.DeleteAllExercises();
+            return result;
         }
     }
 }
