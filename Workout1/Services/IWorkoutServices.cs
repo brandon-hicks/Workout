@@ -10,6 +10,7 @@ namespace Workout1.Services
         Exercise AddExercise(Exercise item);
         Task<IEnumerable<Exercise>> GetExerciseItems();
         Task<Exercise> GetExerciseItem(string id);
+        Task<Exercise> UpdateExercise(string id, Exercise item);
         void DeleteExercise(string Id);
         Task<bool> DeleteAllExercises();
     }

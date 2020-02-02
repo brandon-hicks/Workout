@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using MongoDB.Driver;
 using Workout1.Models;
 using Workout1.Repositories;
 using Workout1.Services;
@@ -33,6 +34,12 @@ namespace WorkoutServices.Services
         public async Task<Exercise> GetExerciseItem(string id)
         {
             return await _repository.GetExercise(id);
+        }
+
+        public async Task<Exercise> UpdateExercise(string id, Exercise item)
+        {
+            item.Id = id;
+            return await _repository.UpdateExercise(id, item);
         }
 
         public async void DeleteExercise(string _id)

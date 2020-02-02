@@ -11,6 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using MongoDB.Driver;
+using Workout1.Config;
 using Workout1.Models;
 using Workout1.Repositories;
 using Workout1.Services;
@@ -31,16 +32,22 @@ namespace Workout1
         {
             services.AddMvc(option => option.EnableEndpointRouting = false)
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
-
-            var mongoClient =
-                new MongoClient(
-                    "mongodb+srv://WorkoutUser:Matthew2019@testcluster-k7nkp.mongodb.net/test?retryWrites=true&w=majority");
-            var db = mongoClient.GetDatabase("Workouts");
             
-            services.AddSingleton(db);
+            var config = new ServerConfig();
+            Configuration.Bind(config);
+            
             services.AddSingleton<IExerciseRepository, ExerciseRepository>();
             services.AddSingleton<IWorkoutServices, WorkoutServices.Services.WorkoutServices>();
             
+            
+
+            var mongoClient =
+                new MongoClient(
+                    config.MongoDB.ConnectionString);
+            var db = mongoClient.GetDatabase("Workouts");
+            services.AddSingleton(db);
+
+
             var options = new CreateIndexOptions() { Unique = true };
             IndexKeysDefinition<Exercise> keyField = "{ exerciseId: 1 }";
             await db.GetCollection<Exercise>("users").Indexes.CreateOneAsync(keyField, options);

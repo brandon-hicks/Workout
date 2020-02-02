@@ -23,7 +23,7 @@ namespace Workout1.Controllers
 
         [HttpPost]
         [Route("addExerciseItem")]
-        public ActionResult<Exercise> Exercise(Exercise item)
+        public ActionResult<Exercise> Exercise([FromBody]Exercise item)
         {
             var exerciseItem = _services.AddExercise(item);
 
@@ -51,6 +51,13 @@ namespace Workout1.Controllers
             var exerciseItem = _services.GetExerciseItem(id).Result;
 
             return exerciseItem == null ? NoContent() : new ActionResult<Exercise>(exerciseItem);
+        }
+
+         [HttpPatch]
+         [Route("updateExercise/{id}")]
+        public async Task<ActionResult<Exercise>> UpdateExercise([FromRoute] string id, [FromBody]Exercise item)
+        {
+            return await _services.UpdateExercise(id, item);
         }
 
         [HttpDelete]

@@ -31,6 +31,12 @@ namespace Workout1.Repositories
             return await _exercises.Find(ex => ex.Id == id ).FirstAsync();
         }
 
+        public async Task<Exercise> UpdateExercise(string id, Exercise item)
+        {
+            return await _exercises.FindOneAndReplaceAsync(ex => ex.Id == id, item);
+            
+        }
+
         public async Task<Exercise> DeleteExercise(string name)
         {
             var recordToDelete = _exercises.AsQueryable().First(ex => ex.Id == name);
